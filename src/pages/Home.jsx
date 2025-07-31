@@ -13,23 +13,7 @@ import locationIcon from "../assets/location.png";
 
 export default function Home() {
   return (
-    <div className="bg-white text-gray-800">
-      {/* Top Contact Bar */}
-      <header className="flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-3 sm:gap-6 p-3 bg-blue-600 text-white text-sm text-center sm:text-left">
-        <div className="flex items-center gap-2">
-          <img src={callIcon} alt="Call" className="w-4" />
-          <span>+260 774 453 005</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <img src={mailIcon} alt="Mail" className="w-4" />
-          <span>kmandmbusinessconsultants1@gmail.com</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <img src={locationIcon} alt="Location" className="w-4" />
-          <span>Woodlands, Lusaka, Zambia</span>
-        </div>
-      </header>
-
+    <div>
       {/* Hero Section with background image */}
       <section
         className="relative bg-cover bg-center min-h-screen flex flex-col justify-center items-center text-center px-6 text-white"
