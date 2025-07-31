@@ -114,6 +114,7 @@ export default function Navbar() {
           >
             Contact
           </Link>
+          <li><a href="/admin" className="hover:text-green-400">Admin</a></li>
         </div>
       )}
     </nav>

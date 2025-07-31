@@ -6,7 +6,9 @@ import Jobs from "./pages/Jobs";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
+import Contact from "./pages/Contact"
+import AdminLogin from "./pages/AdminLogin";
+import Apply from "./pages/Apply";
 
 export default function App() {
   return (
@@ -22,7 +24,11 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/jobs" element={<Jobs />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/apply/:id" element={<Apply />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+           
           </Routes>
         </div>
 
