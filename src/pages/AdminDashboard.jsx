@@ -227,10 +227,6 @@ export default function AdminDashboard() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-blue-900 text-white py-4 text-center text-sm">
-        Powered by <span className="font-semibold">Ukwenda Solutions</span>
-      </footer>
     </div>
   );
 }
