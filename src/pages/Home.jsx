@@ -13,7 +13,7 @@ export default function Home() {
           </p>
           <a
             href="/contact"
-            className="inline-block bg-secondary text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-green-700 transition"
+            className="inline-block bg-secondary text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-green-700 transition"
           >
             Contact Us Today
           </a>
