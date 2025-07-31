@@ -1,7 +1,9 @@
 export default function Footer() {
   return (
-    <footer className="bg-blue-700 text-white text-center p-6 mt-10">
-      <p>&copy; {new Date().getFullYear()} KM‑M Business Consultants Limited. All rights reserved.</p>
+    <footer className="bg-primary text-white py-8 mt-20">
+      <div className="container mx-auto text-center text-sm select-none">
+        &copy; 2025 KM-M Business Consultants. All rights reserved.
+      </div>
     </footer>
   );
 }

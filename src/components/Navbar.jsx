@@ -2,16 +2,17 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
-    <nav className="bg-primary text-white p-4 shadow">
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">KM‑M Consultants</h1>
-        <div className="space-x-6">
-          <Link to="/" className="hover:text-secondary transition">Home</Link>
-          <Link to="/about" className="hover:text-secondary transition">About</Link>
-          <Link to="/services" className="hover:text-secondary transition">Services</Link>
-          <Link to="/jobs" className="hover:text-secondary transition">Jobs</Link>
-          <Link to="/admin" className="hover:text-secondary transition">Admin</Link>
+    <nav className="bg-gradient-to-r from-blue-600 via-green-500 to-blue-600 shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="text-white font-bold text-xl">KM-M Consultants</div>
+        <div className="space-x-6 hidden md:flex">
+          <Link to="/" className="text-white hover:text-green-300 transition">Home</Link>
+          <Link to="/about" className="text-white hover:text-green-300 transition">About</Link>
+          <Link to="/services" className="text-white hover:text-green-300 transition">Services</Link>
+          <Link to="/jobs" className="text-white hover:text-green-300 transition">Jobs</Link>
+          <Link to="/admin" className="text-white hover:text-green-300 transition">Admin</Link>
         </div>
+        {/* Mobile menu toggle here if needed */}
       </div>
     </nav>
   );

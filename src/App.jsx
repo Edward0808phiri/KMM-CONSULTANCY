@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+
 export default function App() {
   return (
     <Router>

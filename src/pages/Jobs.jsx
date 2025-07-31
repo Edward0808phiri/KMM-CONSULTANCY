@@ -1,3 +1,4 @@
+
 export default function Jobs() {
   return (
     <div className="min-h-screen bg-gray-50 py-20 px-6 max-w-5xl mx-auto">
