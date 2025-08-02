@@ -14,8 +14,8 @@ export default function Services() {
     },
     {
       title: "Human Resource Solutions",
-      desc: "Comprehensive HR management, recruitment, and staff development programs.",
-      img: img2,
+      desc: "Comprehensive HR management, rSpecialized services in job evaluation, executive recruitment, payroll, HR policy design, team building, and employee training to help you build a dynamic workforce.ecruitment, and staff development programs.",
+      img: img1,
     },
     {
       title: "Financial Advisory",
@@ -31,6 +31,16 @@ export default function Services() {
       title: "Training & Development",
       desc: "Workshops and programs to enhance skills and drive team productivity.",
       img: img5,
+    },
+    {
+      title: "Market Research & Analysis",
+      desc: "In-depth insights to inform decisions and uncover opportunities.",
+      img: img6,
+    },
+    {
+      title: "Market Research & Analysis",
+      desc: "In-depth insights to inform decisions and uncover opportunities.",
+      img: img6,
     },
     {
       title: "Market Research & Analysis",
