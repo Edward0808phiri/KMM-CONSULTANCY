@@ -1,51 +1,53 @@
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.1.jpg";
-import img3 from "../assets/3.1.jpg";
+import img3 from "../assets/3.jpg";
 import img4 from "../assets/4.jpg";
-import img5 from "../assets/about.jpg";
-import img6 from "../assets/logo.jpg";
+import img5 from "../assets/7.jpg";
+import img6 from "../assets/8.jpg";
+import img7 from "../assets/2.jpg";
+import img8 from "../assets/6.jpg";
 
 export default function Services() {
   const services = [
-    {
-      title: "Business Development Consulting",
-      desc: "Helping you design and implement strategies for sustainable growth.",
-      img: img1,
-    },
     {
       title: "Human Resource Solutions",
       desc: "Comprehensive HR management, rSpecialized services in job evaluation, executive recruitment, payroll, HR policy design, team building, and employee training to help you build a dynamic workforce.ecruitment, and staff development programs.",
       img: img1,
     },
     {
-      title: "Financial Advisory",
-      desc: "Expert guidance on financial planning, budgeting, and investment strategies.",
+      title: "Compensation & Benefits",
+      desc: "Market-based salary benchmarking, benefit structuring, remuneration analysis, and policy guidance to ensure staff retention and competitiveness.",
+      img: img7,
+    },
+    {
+      title: "Recruitment & Executive Search",
+      desc: "We provide end-to-end recruitment solutions including candidate sourcing, executive headhunting, competency-based hiring, and onboarding support.",
       img: img3,
     },
     {
-      title: "Project Management",
-      desc: "End-to-end management for projects of all sizes and complexities.",
-      img: img4,
+      title: "Financial Risk Management",
+      desc: "Policy drafting, internal controls, construction & procurement audits, and financial manuals development tailored for transparency and accountability.",
+      img: img2,
     },
     {
-      title: "Training & Development",
-      desc: "Workshops and programs to enhance skills and drive team productivity.",
+      title: "Tax & Compliance",
+      desc: "Domestic and international tax advisory, reverse VAT, corporate tax filings, payroll compliance, and customized tax planning for operational efficiency.",
+      img: img8,
+    },
+    {
+      title: "Business Process Reviews",
+      desc: "We conduct structured internal audits and governance evaluations to improve efficiency, manage risk, and ensure regulatory compliance.",
       img: img5,
     },
     {
-      title: "Market Research & Analysis",
-      desc: "In-depth insights to inform decisions and uncover opportunities.",
+      title: "Corporate Governance",
+      desc: "Expert support in board structures, secretarial services, policy development, and succession planning for ethical and effective management.",
       img: img6,
     },
     {
-      title: "Market Research & Analysis",
-      desc: "In-depth insights to inform decisions and uncover opportunities.",
-      img: img6,
-    },
-    {
-      title: "Market Research & Analysis",
-      desc: "In-depth insights to inform decisions and uncover opportunities.",
-      img: img6,
+      title: "Investment & Development Advisory",
+      desc: "We assist with ZDA registrations, funding proposals, feasibility studies, public sector reform, and NGO consultancy in water, sanitation, and housing.",
+      img: img4,
     },
   ];
 
