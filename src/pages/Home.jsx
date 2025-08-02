@@ -10,6 +10,7 @@ import img4 from "../assets/4.jpg";
 import callIcon from "../assets/call.png";
 import mailIcon from "../assets/mail.png";
 import locationIcon from "../assets/location.png";
+import logo from "../assets/logo.jpg"
 
 export default function Home() {
   return (
@@ -71,7 +72,7 @@ export default function Home() {
         </div>
         <div>
           <img
-            src={aboutImg}
+            src={logo}
             alt="About Us"
             className="rounded-lg shadow-lg w-full"
           />
