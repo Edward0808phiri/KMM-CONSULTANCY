@@ -12,9 +12,6 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <img src={logo} alt="Logo" className="h-10 w-10 rounded-md" />
-            <span className="ml-3 text-xl font-bold text-blue-700">
-              K M & M
-            </span>
           </div>
 
           {/* Desktop Menu */}
