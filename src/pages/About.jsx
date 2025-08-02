@@ -6,7 +6,7 @@ export default function About() {
 
     <section className="bg-gray-50 min-h-screen py-16 px-6">
 
-      <div className="">
+      <div>
         <h2 className="text-4xl font-bold text-blue-700 mb-6 text-center">
             Our Commitment
         </h2>
@@ -27,11 +27,10 @@ export default function About() {
             It Has Over 100 Associate Consultants On Its Database
           </h2>
           <p className="mt-6 text-lg text-gray-700 leading-relaxed">
-            K M & M BUSINESS CONSULTANTS LIMITED is a systematic organization that provides advisory and management consultant services.
-            <br /><br />
-            K M & M BUSINESS CONSULTANTS LIMITED is managed by <span className="font-semibold text-blue-700">Richard Kajokoto</span> and 
-            <span className="font-semibold text-blue-700"> Farai Kajoko</span>, who have a combined vast experience in the private and public sector 
-            as well as non-governmental organizations.
+            Our network of consultants enables us to ensure that our clients have access to blend of professionals who are well 
+            versed with local conditions, and have access to skillful resources, no matter where they may be located. K M & M 
+            BUSINESS CONSULTANTS LIMITED objectives are to provide consistent, high quality services to regional and local 
+            clients as well as multi-national clients.
           </p>
 
           {/* Buttons */}
@@ -40,7 +39,7 @@ export default function About() {
               href="/contact"
               className="px-6 py-3 bg-blue-700 text-white rounded-lg shadow hover:bg-blue-800 transition"
             >
-              Contact Us
+              Get In Touch
             </a>
             <a
               href="/services"
