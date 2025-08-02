@@ -3,6 +3,7 @@ import aboutImage from "../assets/about.jpg";
 
 export default function About() {
   return (
+
     <section className="bg-gray-50 min-h-screen py-16 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
         {/* Left: Text Content */}
