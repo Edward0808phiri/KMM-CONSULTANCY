@@ -60,7 +60,7 @@ export default function Home() {
               href="#contact"
               className="bg-blue-700 text-white px-6 py-3 rounded-md text-center hover:bg-blue-800 transition"
             >
-              Contact Us
+              Read More
             </a>
             <a
               href="#services"

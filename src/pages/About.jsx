@@ -5,6 +5,21 @@ export default function About() {
   return (
 
     <section className="bg-gray-50 min-h-screen py-16 px-6">
+
+      <div className="">
+        <h2 className="text-4xl font-bold text-blue-700 mb-6 text-center">
+            Our Commitment
+        </h2>
+        <p className="text-gray-600 max-w-3xl mx-auto mb-12">
+          K M & M BUSINESS CONSULTANTS LIMITED assembles highly skilled client focused teams, 
+          who are both dedicated to working with you and are selected to match your requirements in every engagement we undertake. 
+          We understand that you expect value for the money you pay. Our commitment is that we will provide the value you pay for. 
+          Draw on resources K M & M BUSINESS CONSULTANTS LIMITED has established a database of renowned consultants in different fields. 
+          This give us a competitive edge in terms of meeting even the most challenging of assignments.
+          We the resources expertise both locally and internationally to execute assignments.
+        </p>
+      </div>
+
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
         {/* Left: Text Content */}
         <div className="flex-1">
