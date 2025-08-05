@@ -10,6 +10,7 @@ import img4 from "../assets/4.jpg";
 import callIcon from "../assets/call.png";
 import mailIcon from "../assets/mail.png";
 import locationIcon from "../assets/location.png";
+import logo from "../assets/logo.jpg"
 
 export default function Home() {
   return (
@@ -59,7 +60,7 @@ export default function Home() {
               href="#contact"
               className="bg-blue-700 text-white px-6 py-3 rounded-md text-center hover:bg-blue-800 transition"
             >
-              Contact Us
+              Read More
             </a>
             <a
               href="#services"
@@ -71,7 +72,7 @@ export default function Home() {
         </div>
         <div>
           <img
-            src={aboutImg}
+            src={logo}
             alt="About Us"
             className="rounded-lg shadow-lg w-full"
           />
@@ -130,55 +131,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section
-        id="contact"
-        className="py-16 px-6 max-w-4xl mx-auto"
-      >
-        <h2 className="text-2xl sm:text-3xl font-bold text-blue-700 text-center mb-6">
+      <section className="bg-gray-50 min-h-screen py-16 px-6">
+      <div className="max-w-6xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-blue-700">
           Contact Us
         </h2>
-        <p className="text-center text-gray-700 mb-10">
-          We'd be glad to hear from you. Reach out using the form below or
-          contact us directly.
+        <p className="mt-4 text-gray-600 text-lg">
+          We'd love to hear from you! Reach out to us using the details below or send us a message directly.
         </p>
-        <form
-          action="https://formspree.io/f/manbenlz"
-          method="POST"
-          className="bg-white p-6 rounded-lg shadow-md space-y-4"
-        >
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Your Email:
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="example@gmail.com"
-              className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Your Message:
-            </label>
-            <textarea
-              name="message"
-              rows="5"
-              placeholder="Type your message..."
-              className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-6 py-3 w-full sm:w-auto rounded-md hover:bg-green-700 transition"
-          >
-            Send
-          </button>
-        </form>
-      </section>
+      </div>
+
+      {/* Contact Info Boxes */}
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="bg-white shadow-md rounded-lg p-6 text-center border-t-4 border-blue-700">
+          <h3 className="text-xl font-semibold text-blue-700">Address</h3>
+          <p className="mt-2 text-gray-700">
+            Plot No. 25 Cedar Road, Woodlands, Lusaka, Zambia
+          </p>
+        </div>
+        <div className="bg-white shadow-md rounded-lg p-6 text-center border-t-4 border-green-600">
+          <h3 className="text-xl font-semibold text-green-600">Phone</h3>
+          <p className="mt-2 text-gray-700">+260 774 453 005</p>
+        </div>
+        <div className="bg-white shadow-md rounded-lg p-6 text-center border-t-4 border-blue-700">
+          <h3 className="text-xl font-semibold text-blue-700">Email</h3>
+          <p className="mt-2 text-gray-700">
+            <a
+              href="mailto:kmandmbusinessconsultants1@gmail.com"
+              className="text-blue-600 hover:underline"
+            >
+              kmandmbusinessconsultants1@gmail.com
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
     </div>
   );
 }
