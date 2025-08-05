@@ -21,7 +21,7 @@ export default function App() {
         <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/about" element={<AdminDashboard />} />
             <Route path="/services" element={<Services />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/apply/:id" element={<Apply />} />
