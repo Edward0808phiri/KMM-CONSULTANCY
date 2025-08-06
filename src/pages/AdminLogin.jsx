@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -7,14 +9,15 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    // Hardcoded credentials (for now)
-    if (email === "admin@kmm.com" && password === "123456") {
-      localStorage.setItem("isAdmin", "true"); // Save login state
+    setError("");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // On success, save login state
+      localStorage.setItem("isAdmin", "true");
       navigate("/admin/dashboard");
-    } else {
+    } catch (err) {
       setError("Invalid email or password!");
     }
   };
@@ -53,7 +56,6 @@ export default function AdminLogin() {
           >
             Login
           </button>
-          
         </form>
       </div>
     </div>
