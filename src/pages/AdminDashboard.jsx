@@ -547,7 +547,7 @@ export default function AdminDashboard() {
                     <input
                       type="text"
                       name="location"
-                      placeholder="e.g. New York, NY or Remote"
+                      placeholder="e.g. Lusaka, Kitwe, Kabwe, etc."
                       value={jobForm.location}
                       onChange={handleJobChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -578,7 +578,7 @@ export default function AdminDashboard() {
                     <input
                       type="text"
                       name="salary"
-                      placeholder="e.g. $90,000 - $120,000"
+                      placeholder="e.g. K2,000"
                       value={jobForm.salary}
                       onChange={handleJobChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
