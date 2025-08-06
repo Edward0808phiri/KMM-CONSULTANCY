@@ -1,9 +1,11 @@
 import React from "react";
+import Navbar from "../components/Navbar";
 
 export default function Contact() {
   return (
     <section className="bg-gray-50 min-h-screen py-16 px-6">
       <div className="max-w-6xl mx-auto text-center">
+        <Navbar />
         <h2 className="text-3xl md:text-4xl font-bold text-blue-700">
           Contact Us
         </h2>

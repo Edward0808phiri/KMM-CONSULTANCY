@@ -14,10 +14,7 @@ export default function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        {/* Navbar (always visible) */}
-        <Navbar />
-
-        {/* Page content */}
+    
         <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />

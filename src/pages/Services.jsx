@@ -6,6 +6,7 @@ import img5 from "../assets/7.jpg";
 import img6 from "../assets/8.jpg";
 import img7 from "../assets/2.jpg";
 import img8 from "../assets/6.jpg";
+import Navbar from "../components/Navbar";
 
 export default function Services() {
   const services = [
@@ -53,6 +54,7 @@ export default function Services() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-20 px-6">
+      <Navbar />
       <div className="max-w-6xl mx-auto text-center">
         <h1 className="text-4xl font-bold text-blue-700 mb-6">Our Services</h1>
         <p className="text-gray-600 max-w-3xl mx-auto mb-12">

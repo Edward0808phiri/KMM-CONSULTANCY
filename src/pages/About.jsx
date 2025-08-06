@@ -1,12 +1,13 @@
 import React from "react";
 import aboutImage from "../assets/about.jpg";
-
+import Navbar from "../components/Navbar";
 export default function About() {
   return (
 
     <section className="bg-gray-50 min-h-screen py-16 px-6">
 
       <div>
+        <Navbar />
         <h2 className="text-4xl font-bold text-blue-700 mb-6 text-center">
             Our Commitment
         </h2>

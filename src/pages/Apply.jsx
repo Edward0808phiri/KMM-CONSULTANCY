@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 export default function Apply() {
   const { id } = useParams();
@@ -43,6 +44,7 @@ export default function Apply() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <Navbar />
       <h1 className="text-3xl font-bold text-blue-900 mb-6">Apply for {job.title}</h1>
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6 space-y-4 max-w-lg">
         <input

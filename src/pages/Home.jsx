@@ -1,5 +1,5 @@
 import React from "react";
-
+import Navbar from "../components/Navbar";
 // Import images
 import bannerBg from "../assets/homeee.jpg"; // Your background image
 import aboutImg from "../assets/about.jpg";
@@ -15,6 +15,7 @@ import logo from "../assets/logo.jpg"
 export default function Home() {
   return (
     <div>
+      <Navbar />
       {/* Hero Section with background image */}
       <section
         className="relative bg-cover bg-center min-h-screen flex flex-col justify-center items-center text-center px-6 text-white"
