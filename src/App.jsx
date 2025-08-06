@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact"
 import AdminLogin from "./pages/AdminLogin";
+import PrivateRoute from "./components/PrivateRoute";
 import Apply from "./pages/Apply";
 
 export default function App() {
@@ -24,7 +25,14 @@ export default function App() {
             <Route path="/apply/:id" element={<Apply />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route
+          path="/admin/dashboard"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
            
           </Routes>
         </div>
