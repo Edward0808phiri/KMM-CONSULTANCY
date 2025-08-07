@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.1.jpg";
 import img3 from "../assets/3.jpg";
@@ -85,12 +87,13 @@ export default function Services() {
             <h2 className="text-2xl sm:text-3xl font-bold text-blue-700 mb-4">
               
             </h2>
-            <a
-              href="#services"
-              className="bg-green-600 text-white px-6 py-3 rounded-md  text-center hover:bg-green-700 transition"
-            >
-              Make An Appointment
-            </a>
+<Link
+  to="/contact"
+  className="bg-green-600 text-white px-6 py-3 rounded-md text-center hover:bg-green-700 transition block"
+>
+  Make An Appointment
+</Link>
+
           </div>
         </div>
     </div>

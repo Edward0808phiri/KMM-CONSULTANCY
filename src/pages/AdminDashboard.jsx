@@ -1,4 +1,113 @@
 import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { db } from "./firebase"; // Import your Firebase config
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
+
+export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [jobs, setJobs] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [jobForm, setJobForm] = useState({
+    title: "",
+    description: "",
+    qualifications: "",
+    location: "",
+    type: "Full-time",
+    salary: "",
+    status: "Active" // Added status field
+  });
+  // ... other state variables ...
+
+  // Fetch jobs from Firebase
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "jobs"));
+        const jobsData = [];
+        querySnapshot.forEach((doc) => {
+          jobsData.push({ id: doc.id, ...doc.data() });
+        });
+        setJobs(jobsData);
+      } catch (error) {
+        console.error("Error fetching jobs: ", error);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  // Post job to Firebase
+  const postJob = async (e) => {
+    e.preventDefault();
+    try {
+      const newJob = {
+        ...jobForm,
+        postedDate: new Date().toISOString(),
+        views: 0
+      };
+      
+      // Add to Firebase
+      const docRef = await addDoc(collection(db, "jobs"), newJob);
+      
+      // Update local state
+      setJobs([...jobs, { id: docRef.id, ...newJob }]);
+      
+      // Reset form
+      setJobForm({
+        title: "",
+        description: "",
+        qualifications: "",
+        location: "",
+        type: "Full-time",
+        salary: "",
+        status: "Active"
+      });
+      
+      setActiveTab("jobs");
+      alert("Job posted successfully!");
+    } catch (error) {
+      console.error("Error adding job: ", error);
+      alert("Error posting job");
+    }
+  };
+
+  // Delete job from Firebase
+  const deleteJob = async (id) => {
+    if (window.confirm("Are you sure you want to delete this job?")) {
+      try {
+        await deleteDoc(doc(db, "jobs", id));
+        setJobs(jobs.filter(job => job.id !== id));
+        // Also remove applications for this job
+        const jobTitle = jobs.find(j => j.id === id)?.title;
+        setApplications(applications.filter(app => app.jobTitle !== jobTitle));
+      } catch (error) {
+        console.error("Error deleting job: ", error);
+      }
+    }
+  };
+
+  // Toggle job status in Firebase
+  const toggleJobStatus = async (id) => {
+    try {
+      const job = jobs.find(j => j.id === id);
+      const newStatus = job.status === "Active" ? "Closed" : "Active";
+      
+      // Update in Firebase
+      await updateDoc(doc(db, "jobs", id), {
+        status: newStatus
+      });
+      
+      // Update local state
+      setJobs(jobs.map(job => 
+        job.id === id ? { ...job, status: newStatus } : job
+      ));
+    } catch (error) {
+      console.error("Error updating job status: ", error);
+    }
+  };
+
+  // ... rest of your component code ...
+}
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -87,9 +196,11 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
-        setSidebarOpen(false);
+      setIsMobile(window.innerWidth < 1024); // Changed to 1024 for better tablet support
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true); // Always show sidebar on larger screens
+      } else {
+        setSidebarOpen(false); // Hide by default on mobile
       }
     };
     
@@ -128,7 +239,6 @@ export default function AdminDashboard() {
   const deleteJob = (id) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       setJobs(jobs.filter(job => job.id !== id));
-      // Also remove applications for this job
       setApplications(applications.filter(app => app.jobTitle !== jobs.find(j => j.id === id)?.title));
     }
   };
@@ -168,26 +278,34 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar Toggle Button */}
-      <button 
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className={`fixed z-50 ${sidebarOpen ? 'left-64' : 'left-0'} top-4 ml-2 bg-blue-600 text-white p-2 rounded-md shadow-lg transition-all duration-300 md:hidden`}
-      >
-        {sidebarOpen ? '✕' : '☰'}
-      </button>
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && isMobile && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
-      <div className={`bg-blue-900 text-white ${sidebarOpen ? 'w-64' : 'w-0'} fixed md:relative z-40 h-full transition-all duration-300 flex-shrink-0 overflow-hidden`}>
+      <div 
+        className={`
+          bg-blue-900 text-white 
+          ${sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'} 
+          fixed lg:relative z-40 h-full transition-all duration-300 flex-shrink-0 
+          flex flex-col lg:w-64
+        `}
+      >
         <div className="p-4 flex items-center justify-between border-b border-blue-800">
           <h1 className="text-xl font-bold whitespace-nowrap">JobPortal Pro</h1>
           <button 
             onClick={() => setSidebarOpen(false)}
-            className="text-blue-200 hover:text-white md:block hidden"
+            className="text-blue-200 hover:text-white lg:block hidden"
           >
             ◀
           </button>
         </div>
-        <nav className="mt-6">
+        
+        <nav className="mt-6 flex-1 overflow-y-auto">
           {[
             { id: "dashboard", label: "Dashboard", symbol: "📊" },
             { id: "applications", label: "Applications", symbol: "📄" },
@@ -218,27 +336,28 @@ export default function AdminDashboard() {
             </button>
           ))}
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-blue-850 border-t border-blue-800">
+        
+        <div className="p-4 bg-blue-850 border-t border-blue-800">
           <div className="flex items-center">
             <div className="h-10 w-10 rounded-full bg-blue-700 flex items-center justify-center text-white font-bold">
               {accountData.name.charAt(0)}
             </div>
-            <div className="ml-3 whitespace-nowrap">
-              <p className="text-sm font-medium">{accountData.name}</p>
-              <p className="text-xs text-blue-300">{accountData.plan} Plan</p>
+            <div className="ml-3 whitespace-nowrap overflow-hidden">
+              <p className="text-sm font-medium truncate">{accountData.name}</p>
+              <p className="text-xs text-blue-300 truncate">{accountData.plan} Plan</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`flex-1 overflow-auto transition-all duration-300 ${sidebarOpen && isMobile ? 'ml-64' : ''}`}>
+      <div className="flex-1 overflow-auto">
         {/* Top Bar */}
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
           <div className="flex items-center">
             <button 
-              onClick={() => setSidebarOpen(true)}
-              className="mr-4 text-gray-500 hover:text-gray-700 hidden md:block"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="mr-4 text-gray-500 hover:text-gray-700 lg:hidden"
             >
               ☰
             </button>
@@ -362,7 +481,7 @@ export default function AdminDashboard() {
           {/* Applications Tab */}
           {activeTab === "applications" && (
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
                 <h2 className="text-xl font-semibold">Job Applications</h2>
                 <div className="flex space-x-2">
                   <select className="border border-gray-300 rounded-md px-3 py-1 text-sm">
@@ -452,7 +571,7 @@ export default function AdminDashboard() {
           {/* Jobs Tab */}
           {activeTab === "jobs" && (
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
                 <h2 className="text-xl font-semibold">Job Listings</h2>
                 <div className="flex space-x-2">
                   <select className="border border-gray-300 rounded-md px-3 py-1 text-sm">
@@ -472,7 +591,7 @@ export default function AdminDashboard() {
               <div className="divide-y divide-gray-200">
                 {jobs.map((job) => (
                   <div key={job.id} className="p-6 hover:bg-gray-50">
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2">
                           <h3 className="text-lg font-semibold">{job.title}</h3>
@@ -484,7 +603,7 @@ export default function AdminDashboard() {
                             {job.status}
                           </span>
                         </div>
-                        <div className="mt-1 flex items-center space-x-4 text-sm text-gray-600">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-4 text-sm text-gray-600">
                           <span>📍 {job.location}</span>
                           <span>🕒 {job.type}</span>
                           {job.salary && <span>💰 {job.salary}</span>}
@@ -492,7 +611,7 @@ export default function AdminDashboard() {
                         <p className="mt-2 text-sm text-gray-600 line-clamp-2">
                           {job.description}
                         </p>
-                        <div className="mt-3 flex items-center space-x-4 text-sm">
+                        <div className="mt-3 flex flex-wrap items-center gap-x-4 text-sm">
                           <span className="text-blue-600">
                             {applications.filter(app => app.jobTitle === job.title).length} applications
                           </span>
@@ -501,7 +620,7 @@ export default function AdminDashboard() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex space-x-2 ml-4">
+                      <div className="flex space-x-2">
                         <button
                           onClick={() => toggleJobStatus(job.id)}
                           className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100"
@@ -547,7 +666,7 @@ export default function AdminDashboard() {
                     <input
                       type="text"
                       name="location"
-                      placeholder="e.g. Lusaka, Kitwe, Kabwe, etc."
+                      placeholder="e.g. Remote, New York, etc."
                       value={jobForm.location}
                       onChange={handleJobChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -578,7 +697,7 @@ export default function AdminDashboard() {
                     <input
                       type="text"
                       name="salary"
-                      placeholder="e.g. K2,000"
+                      placeholder="e.g. $90,000 - $120,000"
                       value={jobForm.salary}
                       onChange={handleJobChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -684,8 +803,8 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-semibold">Account Settings</h2>
               </div>
               <div className="p-6">
-                <div className="flex items-center space-x-6">
-                  <div className="h-20 w-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-6 sm:space-y-0 sm:space-x-6">
+                  <div className="h-20 w-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
                     {accountData.name.charAt(0)}
                   </div>
                   <div>
