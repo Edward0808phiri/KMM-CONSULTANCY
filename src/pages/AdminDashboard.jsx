@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
-import { useState, useEffect } from "react";
-import { db } from "./firebase"; // Import your Firebase config
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  doc, 
+  deleteDoc, 
+  updateDoc,
+  serverTimestamp,
+  query,
+  orderBy
+} from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -14,193 +25,73 @@ export default function AdminDashboard() {
     location: "",
     type: "Full-time",
     salary: "",
-    status: "Active" // Added status field
-  });
-  // ... other state variables ...
-
-  // Fetch jobs from Firebase
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "jobs"));
-        const jobsData = [];
-        querySnapshot.forEach((doc) => {
-          jobsData.push({ id: doc.id, ...doc.data() });
-        });
-        setJobs(jobsData);
-      } catch (error) {
-        console.error("Error fetching jobs: ", error);
-      }
-    };
-
-    fetchJobs();
-  }, []);
-
-  // Post job to Firebase
-  const postJob = async (e) => {
-    e.preventDefault();
-    try {
-      const newJob = {
-        ...jobForm,
-        postedDate: new Date().toISOString(),
-        views: 0
-      };
-      
-      // Add to Firebase
-      const docRef = await addDoc(collection(db, "jobs"), newJob);
-      
-      // Update local state
-      setJobs([...jobs, { id: docRef.id, ...newJob }]);
-      
-      // Reset form
-      setJobForm({
-        title: "",
-        description: "",
-        qualifications: "",
-        location: "",
-        type: "Full-time",
-        salary: "",
-        status: "Active"
-      });
-      
-      setActiveTab("jobs");
-      alert("Job posted successfully!");
-    } catch (error) {
-      console.error("Error adding job: ", error);
-      alert("Error posting job");
-    }
-  };
-
-  // Delete job from Firebase
-  const deleteJob = async (id) => {
-    if (window.confirm("Are you sure you want to delete this job?")) {
-      try {
-        await deleteDoc(doc(db, "jobs", id));
-        setJobs(jobs.filter(job => job.id !== id));
-        // Also remove applications for this job
-        const jobTitle = jobs.find(j => j.id === id)?.title;
-        setApplications(applications.filter(app => app.jobTitle !== jobTitle));
-      } catch (error) {
-        console.error("Error deleting job: ", error);
-      }
-    }
-  };
-
-  // Toggle job status in Firebase
-  const toggleJobStatus = async (id) => {
-    try {
-      const job = jobs.find(j => j.id === id);
-      const newStatus = job.status === "Active" ? "Closed" : "Active";
-      
-      // Update in Firebase
-      await updateDoc(doc(db, "jobs", id), {
-        status: newStatus
-      });
-      
-      // Update local state
-      setJobs(jobs.map(job => 
-        job.id === id ? { ...job, status: newStatus } : job
-      ));
-    } catch (error) {
-      console.error("Error updating job status: ", error);
-    }
-  };
-
-  // ... rest of your component code ...
-}
-
-export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [jobs, setJobs] = useState([]);
-  const [applications, setApplications] = useState([]);
-  const [jobForm, setJobForm] = useState({
-    title: "",
-    description: "",
-    qualifications: "",
-    location: "",
-    type: "Full-time",
-    salary: ""
+    status: "Active"
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [accountData] = useState({
+  const [accountData, setAccountData] = useState({
     name: "Admin User",
     email: "admin@jobportal.com",
     plan: "Premium"
   });
   const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // Initialize with mock data
+  // Authentication check
   useEffect(() => {
-    const mockJobs = [
-      {
-        id: 1,
-        title: "Senior Frontend Developer",
-        description: "Develop and maintain web applications using React.",
-        qualifications: "5+ years experience with React and TypeScript",
-        location: "Remote",
-        type: "Full-time",
-        salary: "$90,000 - $120,000",
-        postedDate: new Date().toISOString(),
-        status: "Active",
-        views: 245
-      },
-      {
-        id: 2,
-        title: "UX Designer",
-        description: "Create beautiful user experiences for our products.",
-        qualifications: "3+ years UX design experience",
-        location: "New York, NY",
-        type: "Full-time",
-        salary: "$80,000 - $100,000",
-        postedDate: new Date().toISOString(),
-        status: "Active",
-        views: 180
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/login");
+      } else {
+        setAccountData({
+          name: user.displayName || "Admin User",
+          email: user.email || "admin@jobportal.com",
+          plan: "Premium"
+        });
       }
-    ];
+    });
+    return unsubscribe;
+  }, [navigate]);
 
-    const mockApplications = [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "john@example.com",
-        jobTitle: "Senior Frontend Developer",
-        location: "Remote",
-        appliedDate: new Date().toISOString(),
-        viewed: false,
-        status: "New",
-        cv: {
-          name: "John_Doe_CV.pdf",
-          content: "#"
-        }
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        email: "jane@example.com",
-        jobTitle: "UX Designer",
-        location: "New York, NY",
-        appliedDate: new Date().toISOString(),
-        viewed: true,
-        status: "Reviewed",
-        cv: {
-          name: "Jane_Smith_Resume.pdf",
-          content: "#"
-        }
+  // Fetch jobs and applications from Firebase
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch jobs
+        const jobsQuery = query(collection(db, "jobs"), orderBy("postedDate", "desc"));
+        const jobsSnapshot = await getDocs(jobsQuery);
+        const jobsData = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setJobs(jobsData);
+
+        // Fetch applications
+        const appsQuery = query(collection(db, "applications"), orderBy("appliedDate", "desc"));
+        const appsSnapshot = await getDocs(appsQuery);
+        const appsData = appsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setApplications(appsData);
+
+      } catch (error) {
+        setError("Failed to fetch data. Please try again.");
+        console.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
       }
-    ];
+    };
 
-    setJobs(mockJobs);
-    setApplications(mockApplications);
+    fetchData();
   }, []);
 
+  // Responsive sidebar handling
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024); // Changed to 1024 for better tablet support
+      setIsMobile(window.innerWidth < 1024);
       if (window.innerWidth >= 1024) {
-        setSidebarOpen(true); // Always show sidebar on larger screens
+        setSidebarOpen(true);
       } else {
-        setSidebarOpen(false); // Hide by default on mobile
+        setSidebarOpen(false);
       }
     };
     
@@ -214,45 +105,85 @@ export default function AdminDashboard() {
     setJobForm({ ...jobForm, [e.target.name]: e.target.value });
   };
 
-  const postJob = (e) => {
+  // Post job to Firebase
+  const postJob = async (e) => {
     e.preventDefault();
-    const newJob = {
-      ...jobForm,
-      id: Date.now(),
-      postedDate: new Date().toISOString(),
-      status: "Active",
-      views: 0
-    };
-    setJobs([...jobs, newJob]);
-    setJobForm({
-      title: "",
-      description: "",
-      qualifications: "",
-      location: "",
-      type: "Full-time",
-      salary: ""
-    });
-    setActiveTab("jobs");
-    alert("Job posted successfully!");
-  };
-
-  const deleteJob = (id) => {
-    if (window.confirm("Are you sure you want to delete this job?")) {
-      setJobs(jobs.filter(job => job.id !== id));
-      setApplications(applications.filter(app => app.jobTitle !== jobs.find(j => j.id === id)?.title));
+    try {
+      const newJob = {
+        ...jobForm,
+        postedDate: serverTimestamp(),
+        views: 0
+      };
+      
+      const docRef = await addDoc(collection(db, "jobs"), newJob);
+      
+      setJobs([{ id: docRef.id, ...newJob }, ...jobs]);
+      
+      setJobForm({
+        title: "",
+        description: "",
+        qualifications: "",
+        location: "",
+        type: "Full-time",
+        salary: "",
+        status: "Active"
+      });
+      
+      setActiveTab("jobs");
+      alert("Job posted successfully!");
+    } catch (error) {
+      setError("Failed to post job. Please try again.");
+      console.error("Error adding job: ", error);
     }
   };
 
-  const toggleJobStatus = (id) => {
-    setJobs(jobs.map(job => 
-      job.id === id ? { ...job, status: job.status === "Active" ? "Closed" : "Active" } : job
-    ));
+  // Delete job from Firebase
+  const deleteJob = async (id) => {
+    if (window.confirm("Are you sure you want to delete this job?")) {
+      try {
+        await deleteDoc(doc(db, "jobs", id));
+        setJobs(jobs.filter(job => job.id !== id));
+        const jobTitle = jobs.find(j => j.id === id)?.title;
+        setApplications(applications.filter(app => app.jobTitle !== jobTitle));
+      } catch (error) {
+        setError("Failed to delete job. Please try again.");
+        console.error("Error deleting job: ", error);
+      }
+    }
   };
 
-  const markAsViewed = (id) => {
-    setApplications(applications.map(app => 
-      app.id === id ? { ...app, viewed: true, status: "Reviewed" } : app
-    ));
+  // Toggle job status in Firebase
+  const toggleJobStatus = async (id) => {
+    try {
+      const job = jobs.find(j => j.id === id);
+      const newStatus = job.status === "Active" ? "Closed" : "Active";
+      
+      await updateDoc(doc(db, "jobs", id), { status: newStatus });
+      
+      setJobs(jobs.map(job => 
+        job.id === id ? { ...job, status: newStatus } : job
+      ));
+    } catch (error) {
+      setError("Failed to update job status. Please try again.");
+      console.error("Error updating job status: ", error);
+    }
+  };
+
+  // Mark application as reviewed
+  const markAsViewed = async (id) => {
+    try {
+      await updateDoc(doc(db, "applications", id), { 
+        viewed: true, 
+        status: "Reviewed" 
+      });
+      
+      setApplications(applications.map(app => 
+        app.id === id ? { ...app, viewed: true, status: "Reviewed" } : app
+      ));
+    } catch (error) {
+      setError("Failed to update application. Please try again.");
+      console.error("Error updating application: ", error);
+    }
   };
 
   // Calculate stats
@@ -265,8 +196,10 @@ export default function AdminDashboard() {
 
   // Analytics data
   const analytics = {
-    totalViews: jobs.reduce((sum, job) => sum + job.views, 0),
-    applicationsThisMonth: applications.length,
+    totalViews: jobs.reduce((sum, job) => sum + (job.views || 0), 0),
+    applicationsThisMonth: applications.filter(app => 
+      new Date(app.appliedDate).getMonth() === new Date().getMonth()
+    ).length,
     popularJob: jobs.length > 0 
       ? jobs.reduce((prev, current) => 
           (applications.filter(app => app.jobTitle === current.title).length > 
@@ -275,6 +208,14 @@ export default function AdminDashboard() {
         ).title 
       : "No jobs"
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -386,6 +327,19 @@ export default function AdminDashboard() {
             </div>
           </div>
         </header>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-4 my-2">
+            <p>{error}</p>
+            <button 
+              onClick={() => setError(null)}
+              className="float-right text-red-500 hover:text-red-700"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Mobile Search */}
         <div className="p-4 md:hidden">
@@ -616,7 +570,7 @@ export default function AdminDashboard() {
                             {applications.filter(app => app.jobTitle === job.title).length} applications
                           </span>
                           <span className="text-gray-500">
-                            Posted on {new Date(job.postedDate).toLocaleDateString()}
+                            Posted on {job.postedDate?.toDate ? job.postedDate.toDate().toLocaleDateString() : new Date(job.postedDate).toLocaleDateString()}
                           </span>
                         </div>
                       </div>
